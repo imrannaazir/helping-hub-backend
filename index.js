@@ -23,12 +23,23 @@ async function run() {
     try {
         await client.connect();
         const eventCollection = client.db("volunteer").collection("events");
+
+        const volunteerCollection = client.db("volunteer").collection("volunteers");
+
         //get all events api
         app.get('/events', async (req, res) => {
             const query = {};
             const cursor = eventCollection.find(query);
             const events = await cursor.toArray();
             res.send(events)
+        })
+
+        //post a volunteer
+        app.post('/volunteers', async (req, res) => {
+            const newVolunteer = req.body;
+            const result = await volunteerCollection.insertOne(newVolunteer)
+            res.send(result)
+
         })
     }
     finally {
